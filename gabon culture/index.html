@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La Culture Gabonaise</title>
+    <link rel="icon" href="assets/logo.png" type="image/png">
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+        }
+
+        .video-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            width: 100vw;
+            background: #000;
+            position: relative;
+        }
+
+        video {
+            height: 100%;
+            width: auto;
+            max-width: 100%;
+            object-fit: cover;
+        }
+
+        .button-container {
+            position: absolute;
+            bottom: 10%;
+            right: 5%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .action-button {
+            background-color: rgba(255, 255, 255, 0.8);
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+            outline: none;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .action-button:active {
+            transform: scale(0.95);
+        }
+
+        .like-count,
+        .comment-count {
+            color: white;
+            font-size: 14px;
+            text-align: center;
+            margin-top: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div id="videoPlayer" class="video-container">
+        <video src="assets/video1.mp4" controls autoplay></video>
+        <div class="button-container">
+            <div>
+                <button class="action-button like-button">❤️</button>
+                <div class="like-count">0</div>
+            </div>
+            <div>
+                <button class="action-button share-button">🔗</button>
+            </div>
+            <div>
+                <button class="action-button comment-button">💬</button>
+                <div class="comment-count">0</div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const videos = [
+            "assets/video1.mp4", // Change with your video files
+            "assets/video2.mp4",
+            "assets/video3.mp4"
+        ];
+        const likeCounts = Array(videos.length).fill(0); // Like count for each video
+        const commentCounts = Array(videos.length).fill(0); // Comment count for each video
+        let currentVideoIndex = 0;
+
+        const videoElement = document.querySelector("video");
+        const videoPlayer = document.getElementById("videoPlayer");
+        const likeButton = document.querySelector(".like-button");
+        const shareButton = document.querySelector(".share-button");
+        const commentButton = document.querySelector(".comment-button");
+        const likeCountElement = document.querySelector(".like-count");
+        const commentCountElement = document.querySelector(".comment-count");
+
+        function playNextVideo() {
+            currentVideoIndex = (currentVideoIndex + 1) % videos.length; // Increment index
+            updateVideo();
+        }
+
+        function playPreviousVideo() {
+            currentVideoIndex = (currentVideoIndex - 1 + videos.length) % videos.length; // Decrement index
+            updateVideo();
+        }
+
+        function updateVideo() {
+            videoElement.src = videos[currentVideoIndex]; // Change video source
+            videoElement.play(); // Play new video
+            updateCounts(); // Update like and comment counts for the new video
+        }
+
+        function updateCounts() {
+            likeCountElement.textContent = likeCounts[currentVideoIndex]; // Update like count
+            commentCountElement.textContent = commentCounts[currentVideoIndex]; // Update comment count
+        }
+
+        function handleLike() {
+            likeCounts[currentVideoIndex]++; // Increment like count
+            updateCounts(); // Update displayed counts
+        }
+
+        function handleShare() {
+            alert(`Video shared: ${videos[currentVideoIndex]}`); // Simulate share action
+        }
+
+        function handleComment() {
+            const newComment = prompt("Enter your comment:");
+            if (newComment) {
+                commentCounts[currentVideoIndex]++; // Increment comment count
+                updateCounts(); // Update displayed counts
+            }
+        }
+
+        function handleSwipe(event) {
+            if (event.deltaY > 0) {
+                playNextVideo(); // Scroll down for next video
+            } else if (event.deltaY < 0) {
+                playPreviousVideo(); // Scroll up for previous video
+            }
+        }
+
+        // Initialize counts
+        updateCounts();
+
+        // Event listeners
+        videoElement.addEventListener("ended", playNextVideo); // Play next video on end
+        videoPlayer.addEventListener("wheel", handleSwipe); // Scroll for video navigation
+        likeButton.addEventListener("click", handleLike); // Like button click
+        shareButton.addEventListener("click", handleShare); // Share button click
+        commentButton.addEventListener("click", handleComment); // Comment button click
+    </script>
+</body>
+</html>
